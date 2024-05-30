@@ -73,11 +73,25 @@ typedef struct jogador{
 
 baralho* inicializaBaralho(){
     baralho* caixa = (baralho*)malloc(sizeof(baralho)*1);
-    
-    for(int i=0; i<numBin; i++){
 
+    caixa->tam = numBin+numEspCor+numEsp+numLog;
+    
+    int cores = 0;
+    for(int i=0; i<numBin; i++){
+        caixa->cartasBin[i].num = i % 10; //num de 0 a 9
+        if(i < 20) cores = Azul;
+        else if(i >= 20 && i<40) cores = Amarelo;
+        else if(i >= 40 && i<60) cores = Verde;
+        else if(i>=60 && i<80) cores = Vermelho;
+        caixa->cartasBin[i].cor = cores;
     }
-    caixa->cartasBin->cor;
+    for(int i=0; i<numEspCor; i++){
+        //alterna o nome ou a cor
+        if(i<4) ;
+        caixa->cartasEspCor[i].nome;
+        caixa->cartasEspCor[i].cor;
+        caixa->cartasEspCor[i].efeito;
+    }
 
 
 
