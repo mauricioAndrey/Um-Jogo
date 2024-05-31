@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 //===============================================================
 //Defines
@@ -42,7 +43,7 @@ typedef struct cartasNUM{
 }cartasNUM;
 
 typedef struct cartasEsp{
-    int nome;
+    char nome[50];
     int cor;
     int efeito;
 }cartasEsp;
@@ -85,12 +86,22 @@ baralho* inicializaBaralho(){
         else if(i>=60 && i<80) cores = Vermelho;
         caixa->cartasBin[i].cor = cores;
     }
+    int efeito;
+    char nomes[50];
     for(int i=0; i<numEspCor; i++){
-        //alterna o nome ou a cor
-        if(i<4) ;
-        caixa->cartasEspCor[i].nome;
-        caixa->cartasEspCor[i].cor;
-        caixa->cartasEspCor[i].efeito;
+        //alterna a cor de 6 em 6
+        if(i<6) cores = Azul;
+        else if(i>=6 && i<12) cores = Amarelo;
+        else if(i>=12 && i<18) cores = Verde;
+        else if(i>=18 && i<24) cores = Vermelho;
+        //alterna os 3 nomes a cada duas cartas
+        if(i%3==0) {strcpy(nomes,"MaisDois\0"); efeito = MaisDois;}
+        else if(i%3==1) {strcpy(nomes,"Bloqueio\0"); efeito = Bloqueia;}
+        else if(i%3==2) {strcpy(nomes, "InverteDirecao\0"); efeito = InverteDirecao;}
+        //atribuições
+        strcpy(caixa->cartasEspCor[i].nome, nomes);
+        caixa->cartasEspCor[i].cor = cores;
+        caixa->cartasEspCor[i].efeito = efeito;
     }
 
 
