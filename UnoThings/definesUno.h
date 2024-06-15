@@ -286,6 +286,7 @@ jogador** inicializaJogadores(baralho* bar, int tam){
         int valor = 0; 
         int contNB=0, contEC=0, contE=0, contL=0;
 
+        //escolhendo cada carta para cada jogador
         for(int j = 0; j<7; j++){
             valor = (bar->tam + (rand() % bar->tam));
             int escolhido = 0;
