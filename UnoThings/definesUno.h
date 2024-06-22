@@ -42,21 +42,21 @@ enum numCartas{
 
 typedef struct cartasNUM{
     int num; //de 0 a 9
-    int cor; //4 cores
+    enum cores cor; //4 cores
     bool usada;
 }cartasNUM;
 
 typedef struct cartasEsp{
     char nome[50];
-    int cor;
-    int efeito;
+    enum cores cor;
+    enum efeito efeito;
     bool usada;
 }cartasEsp;
 
 typedef struct cartasLog{
     char nome[50];
-    int efeito1;
-    int efeito2;
+    enum efeito efeito1;
+    enum efeito efeito2;
     bool usada;
 }cartasLog;
 
@@ -82,8 +82,8 @@ baralho* inicializaBaralho(){
     baralho* caixa = (baralho*)malloc(sizeof(baralho)*1);
     caixa->tam = numBin+numEspCor+numEsp+numLog;
     
-    int cores = Preto;
-    int efeito = Nenhum;
+    enum cores cores = Preto;
+    enum efeito efeito = Nenhum;
     char nomes[50];
     for(int i=0; i<numBin; i++){
         caixa->cartasBin[i].num = i % 10; //num de 0 a 9
@@ -166,8 +166,7 @@ void freeBaralho(baralho* bar){
 }
 
 void printBaralho(baralho* bar){
-    printf("Bararlho\n");
-    printf("Tamanho: %d\n", bar->tam);
+    printf("Bararlho\nTamanho: %d\n", bar->tam);
 
     char cor[50] = "Nenhum";
     printf("Cartas Numericas\n");
@@ -188,17 +187,19 @@ void printBaralho(baralho* bar){
                                 ( (bar->cartasEspCor[i].cor == Vermelho) ? ("Vermelho") : 
                                     ("Nenhum") 
                     )))));
-        printf("\tCarta Especial %s, Efeito %s\n", cor , bar->cartasEspCor[i].nome);
+        printf("\tEfeito %s, cor %s\n" , bar->cartasEspCor[i].nome, cor);
     }
     printf("Cartas Especiais Pretas\n");
     for(int i=0; i<numEsp; i++){
-        printf("\tCarta Especial, Efeito %s\n", bar->cartasEspPret[i].nome);
+        printf("\tEspecial, Efeito %s\n", bar->cartasEspPret[i].nome);
     }
     printf("Cartas Logicas\n");
     for(int i=0; i<numLog; i++){
-        printf("\tCarta Logica, Efeito %s", bar->cartasLogicas[i].nome);
+        printf("\tLogica, Efeito %s\n", bar->cartasLogicas[i].nome);
     }
 }
+
+//=====================================================================
 
 //escolha das cartas
 int escolheNumBin(baralho* bar, int valor){
@@ -321,14 +322,50 @@ jogador** inicializaJogadores(baralho* bar, int tam){
 }
 
 void printJogadores(jogador* jor){
-    
+    for(int i=0; i< (sizeof(jor)/sizeof(jogador)); i++){
+        char cor[50] = "Nenhum";
+        printf("Jogador %d\nNum de Cartas %d", i, jor[i].cartasMao);
+        printf("\tCartas Numericas:\n");
+        for(int j=0; j < (sizeof(jor[i].cartasBin)/sizeof(cartasNUM)); j++){
+            strcpy(cor, (( jor[i].cartasBin[j].cor == Azul) ? ("Azul") : 
+                        ( (jor[i].cartasBin[j].cor == Amarelo) ? ("Amarelo") : 
+                            ( (jor[i].cartasBin[j].cor == Verde) ? ("Verde") : 
+                                ( (jor[i].cartasBin[j].cor == Vermelho) ? ("Vermelho") : 
+                                    ("Nenhum") 
+                    )))));
+            printf("\t\tNum %d, Cor %s\n", jor[i].cartasBin[j].num, cor);
+        }
+        printf("\tCartas Especiais com Cores:\n"); 
+        for(int j=0; j < (sizeof(jor[i].cartasEspCor)/sizeof(cartasEsp)); j++){
+            strcpy(cor, (( jor[i].cartasEspCor[j].cor == Azul) ? ("Azul") : 
+                        ( (jor[i].cartasEspCor[j].cor == Amarelo) ? ("Amarelo") : 
+                            ( (jor[i].cartasEspCor[j].cor == Verde) ? ("Verde") : 
+                                ( (jor[i].cartasEspCor[j].cor == Vermelho) ? ("Vermelho") : 
+                                    ("Nenhum") 
+                    )))));
+            printf("\t\tEfeito %s, Cor %s\n", jor[i].cartasEspCor[j].nome, cor);
+        }
+        printf("\tCartas Especiais Preto:\n"); 
+        for(int j=0; j < (sizeof(jor[i].cartasEspPret)/sizeof(cartasEsp)); j++){
+            printf("\t\tEspecial, Efeito %s\n", jor[i].cartasEspPret[j].nome);
+        }
+        printf("\tCartas Logicas:\n"); 
+        for(int j=0; j < (sizeof(jor[i].cartasLogicas)/sizeof(cartasLog)); j++){
+            printf("\t\tLogica, Efeito %s\n", jor[i].cartasLogicas[j].nome);
+        }
+        
+    }
 }
 
 void freeJogadores(jogador* jor){
+    for(int i=0; i < (sizeof(jor)/sizeof(jogador)); i++){
+        free(jor[i].cartasBin);
+        free(jor[i].cartasEspCor);
+        free(jor[i].cartasEspPret);
+        free(jor[i].cartasLogicas);
+    }
     free(jor);
 }
-
-
 
 //=====================================================================
 
