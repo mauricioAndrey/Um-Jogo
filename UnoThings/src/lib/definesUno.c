@@ -1,80 +1,13 @@
-#ifndef _DEFINES_UNO_
-#define _DEFINES_UNO_
+#include "definesUno.h"
 
-#include <stdlib.h>
 #include <string.h>
 #include <time.h> 
 
-
 //=====================================================================
-//Defines
 
-enum cores{
-    Azul = 0, 
-    Vermelho, 
-    Verde, 
-    Amarelo, 
-    Preto
-};
-
-enum efeito{
-    Nenhum = 0,
-    //com cor
-    MaisDois,
-    InverteDirecao,
-    Bloqueia,
-    //cor preta
-    EscolheCor, 
-    MaisQuatro, 
-    //logicas
-    TrocaMaos,
-    EscolheEfeito,
-    ManterCor, 
-    Quebrar
-}; 
-
-enum numCartas{
-    numBin = 80, //eh o dobro
-    numEspCor = 24, 
-    numEsp = 6, 
-    numLog = 10
-};
-
-typedef struct cartasNUM{
-    int num; //de 0 a 9
-    enum cores cor; //4 cores
-    bool usada;
-}cartasNUM;
-
-typedef struct cartasEsp{
-    char nome[50];
-    enum cores cor;
-    enum efeito efeito;
-    bool usada;
-}cartasEsp;
-
-typedef struct cartasLog{
-    char nome[50];
-    enum efeito efeito1;
-    enum efeito efeito2;
-    bool usada;
-}cartasLog;
-
-typedef struct baralho{
-    int tam; //40+24+6+10=120
-    cartasNUM cartasBin[numBin]; //10 para cada cor
-    cartasEsp cartasEspCor[numEspCor]; //block, direction, +2
-    cartasEsp cartasEspPret[numEsp]; //+4, mudaCor
-    cartasLog cartasLogicas[numLog]; //exit, if, if not,  while, break
-}baralho;
-
-typedef struct jogador{
-    int cartasMao;
-    cartasNUM* cartasBin;
-    cartasEsp* cartasEspCor;
-    cartasEsp* cartasEspPret;
-    cartasLog* cartasLogicas;
-}jogador;
+void teste(void){
+    printf("OI,gay\n\n");
+}
 
 //=====================================================================
 
@@ -128,7 +61,7 @@ baralho* inicializaBaralho(){
     
     for(int i=0; i<numLog; i++){
         if(i<2) {
-            strcpy(nomes, "While");//While !carta.num && carta.num!=cor : vez = cor
+            strcpy(nomes, "While"); 
             efeito = ManterCor;
             cores = Nenhum;
         }
@@ -216,6 +149,7 @@ int escolheNumBin(baralho* bar, int valor){
             return i; 
         }
     }
+    return -1;
 }
 int escolheEspCor(baralho* bar, int valor){
     int escolha = (numEspCor + (valor % numEspCor));
@@ -231,6 +165,7 @@ int escolheEspCor(baralho* bar, int valor){
             return i; 
         }
     }
+    return -1;
 }
 int escolheEsp(baralho* bar, int valor){
     int escolha = (numEsp + (valor % numEsp));
@@ -246,6 +181,7 @@ int escolheEsp(baralho* bar, int valor){
             return i; 
         }
     }
+    return -1;
 }
 int escolheLog(baralho* bar, int valor){
     int escolha = (numLog + (valor % numLog));
@@ -261,9 +197,10 @@ int escolheLog(baralho* bar, int valor){
             return i; 
         }
     }
+    return -1;
 }
 
-jogador** inicializaJogadores(baralho* bar, int tam){
+jogador* inicializaJogadores(baralho* bar, int tam){
     //dividir 7 cartas para cada jogador
     //o num de jogadores vezes 7 deve ser menor doq três quartos do num de cartas no baralho
     //7 * (~12) = 90  //máximo de 12 jogadores (muita coisa)
@@ -294,39 +231,51 @@ jogador** inicializaJogadores(baralho* bar, int tam){
 
             if(valor >= 0 && valor < numBin){ //carta binária
                 escolhido = escolheNumBin(bar, valor);
-                jogadores[i].cartasBin = (cartasNUM*)realloc(jogadores[i].cartasBin, sizeof(cartasNUM)*(contNB+1));
-                jogadores[i].cartasBin[contNB] = bar->cartasBin[escolhido]; 
-                contNB++;
+                if(escolhido >= 0){
+                    jogadores[i].cartasBin = (cartasNUM*)realloc(jogadores[i].cartasBin, sizeof(cartasNUM)*(contNB+1));
+                    jogadores[i].cartasBin[contNB] = bar->cartasBin[escolhido]; 
+                    contNB++;
+                } else jogadores[i].cartasMao--;
             }
             else if(valor >= numBin && valor < numEspCor){ //carta especial com cor 
                 escolhido = escolheEspCor(bar, valor);
-                jogadores[i].cartasEspCor = (cartasEsp*)realloc(jogadores[i].cartasEspCor, sizeof(cartasEsp)*(contEC+1));
-                jogadores[i].cartasEspCor[contEC] = bar->cartasEspCor[escolhido]; 
-                contEC++;
+                if(escolhido >= 0){
+                    jogadores[i].cartasEspCor = (cartasEsp*)realloc(jogadores[i].cartasEspCor, sizeof(cartasEsp)*(contEC+1));
+                    jogadores[i].cartasEspCor[contEC] = bar->cartasEspCor[escolhido]; 
+                    contEC++;
+                } else jogadores[i].cartasMao--;
             }
             else if(valor >= numEspCor && valor < numEsp){ //carta especial sem cor 
                 escolhido = escolheEsp(bar, valor);
-                jogadores[i].cartasEspPret = (cartasEsp*)realloc(jogadores[i].cartasEspPret, sizeof(cartasEsp)*(contE+1));
-                jogadores[i].cartasEspPret[contE] = bar->cartasEspPret[escolhido]; 
-                contE++;
+                if(escolhido >= 0){
+                    jogadores[i].cartasEspPret = (cartasEsp*)realloc(jogadores[i].cartasEspPret, sizeof(cartasEsp)*(contE+1));
+                    jogadores[i].cartasEspPret[contE] = bar->cartasEspPret[escolhido]; 
+                    contE++;
+                } else jogadores[i].cartasMao--;
             }
             else if(valor >= numEsp && valor < numLog){ //cartas logicas 
                 escolhido = escolheLog(bar, valor);
-                jogadores[i].cartasLogicas = (cartasLog*)realloc(jogadores[i].cartasLogicas, sizeof(cartasLog)*(contL+1));
-                jogadores[i].cartasLogicas[contL] = bar->cartasLogicas[escolhido]; 
-                contL++;
+                if(escolhido >= 0){
+                    jogadores[i].cartasLogicas = (cartasLog*)realloc(jogadores[i].cartasLogicas, sizeof(cartasLog)*(contL+1));
+                    jogadores[i].cartasLogicas[contL] = bar->cartasLogicas[escolhido]; 
+                    contL++;
+                } else jogadores[i].cartasMao--;
             }
         }
+        jogadores[i].cartasBin->size = contNB;
+        jogadores[i].cartasEspCor->size = contEC;
+        jogadores[i].cartasEspPret->size = contE;
+        jogadores[i].cartasLogicas->size = contL;
     }
-    return &jogadores;
+    return jogadores;
 }
 
-void printJogadores(jogador* jor){
-    for(int i=0; i< (sizeof(jor)/sizeof(jogador)); i++){
+void printJogadores(jogador* jor, int size){
+    for(int i=0; i < size; i++){
         char cor[50] = "Nenhum";
         printf("Jogador %d\nNum de Cartas %d", i, jor[i].cartasMao);
         printf("\tCartas Numericas:\n");
-        for(int j=0; j < (sizeof(jor[i].cartasBin)/sizeof(cartasNUM)); j++){
+        for(int j=0; j < jor[i].cartasBin->size; j++){
             strcpy(cor, (( jor[i].cartasBin[j].cor == Azul) ? ("Azul") : 
                         ( (jor[i].cartasBin[j].cor == Amarelo) ? ("Amarelo") : 
                             ( (jor[i].cartasBin[j].cor == Verde) ? ("Verde") : 
@@ -336,7 +285,7 @@ void printJogadores(jogador* jor){
             printf("\t\tNum %d, Cor %s\n", jor[i].cartasBin[j].num, cor);
         }
         printf("\tCartas Especiais com Cores:\n"); 
-        for(int j=0; j < (sizeof(jor[i].cartasEspCor)/sizeof(cartasEsp)); j++){
+        for(int j=0; j < jor[i].cartasEspCor->size; j++){
             strcpy(cor, (( jor[i].cartasEspCor[j].cor == Azul) ? ("Azul") : 
                         ( (jor[i].cartasEspCor[j].cor == Amarelo) ? ("Amarelo") : 
                             ( (jor[i].cartasEspCor[j].cor == Verde) ? ("Verde") : 
@@ -346,19 +295,19 @@ void printJogadores(jogador* jor){
             printf("\t\tEfeito %s, Cor %s\n", jor[i].cartasEspCor[j].nome, cor);
         }
         printf("\tCartas Especiais Preto:\n"); 
-        for(int j=0; j < (sizeof(jor[i].cartasEspPret)/sizeof(cartasEsp)); j++){
+        for(int j=0; j < jor[i].cartasEspPret->size; j++){
             printf("\t\tEspecial, Efeito %s\n", jor[i].cartasEspPret[j].nome);
         }
         printf("\tCartas Logicas:\n"); 
-        for(int j=0; j < (sizeof(jor[i].cartasLogicas)/sizeof(cartasLog)); j++){
+        for(int j=0; j < jor[i].cartasLogicas->size; j++){
             printf("\t\tLogica, Efeito %s\n", jor[i].cartasLogicas[j].nome);
         }
         
     }
 }
 
-void freeJogadores(jogador* jor){
-    for(int i=0; i < (sizeof(jor)/sizeof(jogador)); i++){
+void freeJogadores(jogador* jor, int size){
+    for(int i=0; i < size; i++){
         free(jor[i].cartasBin);
         free(jor[i].cartasEspCor);
         free(jor[i].cartasEspPret);
@@ -369,4 +318,3 @@ void freeJogadores(jogador* jor){
 
 //=====================================================================
 
-#endif
