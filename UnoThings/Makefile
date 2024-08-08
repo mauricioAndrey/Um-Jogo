@@ -10,7 +10,7 @@ UNO_DIR = UnoThings
 TARGET = $(EXE_DIR)/main
 
 #arquivoFonte
-SRC = $(SRC_DIR)/main.c
+SRC = $(SRC_DIR)/extraUno.c
 defUNO_SRC = $(LIB_DIR)/definesUno.c
 
 #objetos

@@ -1,14 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-//compilar
-#include <definesUno.h>
+#include "main.c"
 
-//=====================================================================
 
-//baralho* inicializaBaralho();
-//void freeBaralho(baralho* bar);
+int main(){
+    mainTeste();
+    return 0;
+}
 
 
 
