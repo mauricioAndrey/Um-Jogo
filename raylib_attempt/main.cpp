@@ -2,12 +2,15 @@
 #include <vector>
 #include "raylib.h"
 
+#include "modos.hpp"
+
+
 enum {
     menu = 1,
     pause,
     outroMenu,
     explorando,
-    batalha
+    puzzle
 };
 
 int main(){
@@ -25,14 +28,14 @@ int main(){
     const float screenHeight = (const float) GetScreenHeight();
 
 
-    //--------------------LOADS------------------------//
+    //---------------------LOADS------------------------//
 
     //-------------------------------------------------//
 
     while(!WindowShouldClose()){
         if(gameMode == menu){
             prevGameMode = menu;
-
+            
         }
         else if(gameMode == outroMenu){
             prevGameMode = outroMenu;
@@ -42,8 +45,8 @@ int main(){
             prevGameMode = explorando;
 
         }
-        else if(gameMode == batalha){
-            prevGameMode = batalha;
+        else if(gameMode == puzzle){
+            prevGameMode = puzzle;
 
         }
         else if(gameMode == pause){

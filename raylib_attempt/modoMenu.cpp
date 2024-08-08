@@ -1,0 +1,5 @@
+
+//modos 
+int menu(){
+    
+}
